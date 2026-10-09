@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initBookingEngine();
   initMobileNav();
   initParallaxEffects();
+  init3DTiltEngine();
 });
 
 /* ==========================================================================
@@ -191,11 +192,11 @@ function initStatsCounter() {
 /* ==========================================================================
    6. TREATMENT DETAILS MODAL DATA & CONTROLLER
    ========================================================================== */
-const treatmentsData = {
   aroma: {
     title: "Aroma Therapy Massage",
     tagline: "Emotional serenity & botanical essential healing",
-    image: "assets/spa-amenities.jpg",
+    image: "assets/spa-aroma-girl.jpg",
+    pageUrl: "aroma-massage.html",
     duration: "60 / 90 Minutes",
     focus: "Full Body Stress Relief, Nervous System Calming",
     description: "Experience a soothing and relaxing Aroma Massage at Walnut Spa, Naubad, Bidar. This wellness-focused massage combines gentle rhythmic massage techniques with warm organic aromatic essential oils (lavender, eucalyptus, lemongrass, sandalwood). It is a wonderful choice for those looking to take a break from everyday stress, relax their muscles, and enjoy some peaceful personal time.",
@@ -209,7 +210,8 @@ const treatmentsData = {
   body: {
     title: "Full Body Spa & Massage",
     tagline: "Complete head-to-toe relaxation & vital renewal",
-    image: "assets/spa-suite-1.jpg",
+    image: "assets/spa-female-massage.jpg",
+    pageUrl: "full-body-spa-and-massage.html",
     duration: "60 / 90 / 120 Minutes",
     focus: "Holistic Total Body Rejuvenation",
     description: "Give yourself a well-deserved break with a relaxing Full Body Spa & Massage at Walnut Spa, Naubad, Bidar. Our skilled therapists work systematically across all major muscle groups—neck, shoulders, back, arms, legs, and feet—to dissolve fatigue, enhance lymph flow, and restore harmonic balance.",
@@ -223,7 +225,8 @@ const treatmentsData = {
   thai: {
     title: "Traditional Thai Spa & Massage",
     tagline: "Ancient acupressure & passive yogic flexibility",
-    image: "assets/spa-thai.jpg",
+    image: "assets/spa-thai-girl.jpg",
+    pageUrl: "thai-spa-and-massage.html",
     duration: "60 / 90 Minutes",
     focus: "Energy Meridians & Muscular Flexibility",
     description: "Experience the calming and restorative benefits of Thai Spa & Massage at Walnut Spa, Naubad, Bidar. Combining assisted yoga stretches, gentle rocking, and focused rhythmic palm pressure along the body's energy channels ('Sen lines'), this therapy releases energy blocks and unlocks freedom of movement.",
@@ -237,7 +240,8 @@ const treatmentsData = {
   deep: {
     title: "Deep Tissue Muscle Therapy",
     tagline: "Intense myofascial tension release & knot therapy",
-    image: "assets/spa-deep-tissue.jpg",
+    image: "assets/spa-deep-tissue-girl.jpg",
+    pageUrl: "deep-tissue-massage.html",
     duration: "60 / 90 Minutes",
     focus: "Chronic Muscle Knots & Postural Tension",
     description: "A therapeutic, slow-pressure treatment designed to target the inner layers of muscle fibers and connective tissues. Ideal for active individuals, gym-goers, or those experiencing chronic upper back, shoulder, and neck pain from prolonged desk work.",
@@ -252,6 +256,7 @@ const treatmentsData = {
     title: "Swedish Classical Massage",
     tagline: "The gold standard of gentle European relaxation",
     image: "assets/spa-swedish.jpg",
+    pageUrl: "swedish-massage.html",
     duration: "60 / 90 Minutes",
     focus: "Circulation Enhancement & Total Relaxation",
     description: "The world's most beloved classic therapeutic massage. Uses long, flowing effleurage strokes, gentle kneading (petrissage), and rhythmic percussion toward the heart. Perfect for newcomers to spa therapy who desire pure tranquility.",
@@ -265,7 +270,8 @@ const treatmentsData = {
   couple: {
     title: "Luxury Couple Massage & Spa",
     tagline: "Private shared luxury retreat with romantic ambiance",
-    image: "assets/spa-couple.jpg",
+    image: "assets/spa-couple-luxury.jpg",
+    pageUrl: "couple-massage-and-spa.html",
     duration: "90 / 120 Minutes",
     focus: "Shared Wellness & Restful Bond",
     description: "Unwind alongside your partner in our exclusive private couple suite at Walnut Spa Bidar. Featuring twin massage tables, ambient candlelight, soothing aromas, and synchronized massage therapy performed by two senior therapists.",
@@ -280,6 +286,7 @@ const treatmentsData = {
     title: "Jacuzzi Spa & Hydrotherapy",
     tagline: "Warm aerated hydro-jets & mineral soak",
     image: "assets/spa-jacuzzi.jpg",
+    pageUrl: "jacuzzi-massage-and-spa.html",
     duration: "45 / 60 Minutes",
     focus: "Hydro-thermal Relief & Muscle Decompression",
     description: "Immerse yourself in our premium temperature-controlled jacuzzi tub equipped with targeted hydro-massage jets. Water buoyancy cradles your spine, relieves joint compression, and melts away tension prior to or after a body massage.",
@@ -294,6 +301,7 @@ const treatmentsData = {
     title: "Herbal Steam Bath",
     tagline: "Detoxifying botanical mist & pore opening",
     image: "assets/spa-steam.jpg",
+    pageUrl: "steam-bath.html",
     duration: "30 / 45 Minutes",
     focus: "Skin Detoxification & Respiratory Relief",
     description: "Step into our aromatic steam chamber infused with eucalyptus and herbal extracts. The warm, nutrient-rich steam cleanses skin impurities, improves respiration, and prepares the body for deep restorative oil therapies.",
@@ -308,6 +316,7 @@ const treatmentsData = {
     title: "Walnut Signature Wellness Massage",
     tagline: "Our master therapist's bespoke fusion ritual",
     image: "assets/spa-herbal.jpg",
+    pageUrl: "signature-massage.html",
     duration: "90 / 120 Minutes",
     focus: "The Ultimate Walnut Spa Luxury Experience",
     description: "Our crowning masterpiece: a synchronized combination of Swedish flow, Balinese pressure, warm herbal compresses, and custom aromatherapy oils curated specifically to your body's unique state on the day of your visit.",
@@ -321,7 +330,8 @@ const treatmentsData = {
   balinese: {
     title: "Traditional Balinese Massage",
     tagline: "Exotic Indonesian acupressure & warm oil rolling",
-    image: "assets/spa-balinese.jpg",
+    image: "assets/spa-balinese-girl.jpg",
+    pageUrl: "balinese-massage.html",
     duration: "60 / 90 Minutes",
     focus: "Deep Muscle Acupressure & Skin Rolling",
     description: "Originating from Bali, Indonesia, this therapeutic ritual combines acupressure, gentle skin rolling, kneading, and warm fragrant coconut and spice oils to stimulate blood and chi flow throughout the whole body.",
@@ -427,6 +437,7 @@ function initServiceModal() {
           </ul>
 
           <div style="display: flex; flex-wrap: wrap; gap: 14px; border-top: 1px solid var(--border-subtle); padding-top: 24px;">
+            ${data.pageUrl ? `<a href="${data.pageUrl}" class="btn btn-light" style="flex: 1 1 100%; text-align: center;"><i class="fas fa-external-link-alt"></i> View Full Therapy Guide & Spec</a>` : ''}
             <a href="https://wa.me/919972053939?text=Hello%20Walnut%20Spa,%20I%20would%20like%20to%20inquire%20and%20book%20the%20${encodeURIComponent(data.title)}" 
                target="_blank" 
                class="btn btn-whatsapp" 
@@ -441,6 +452,36 @@ function initServiceModal() {
       </div>
     `;
   }
+}
+
+/* ==========================================================================
+   3D TILT ENGINE & PARALLAX SENSITIVITY
+   ========================================================================== */
+function init3DTiltEngine() {
+  const tiltElements = document.querySelectorAll('.tilt-3d, .service-pill-card, .catalog-card, .area-blog-card, .benefit-feature-card, .testimonial-card, .spec-box');
+  
+  tiltElements.forEach(el => {
+    el.style.transition = 'transform 0.2s cubic-bezier(0.2, 0.8, 0.4, 1)';
+    el.style.transformStyle = 'preserve-3d';
+
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -6;
+      const rotateY = ((x - centerX) / centerX) * 6;
+      
+      el.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(8px)`;
+    });
+    
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+    });
+  });
 }
 
 /* ==========================================================================
