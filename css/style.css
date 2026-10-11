@@ -882,7 +882,7 @@ h1 em, h2 em, h3 em, h4 em,
    TOP SERVICES PILL SLIDER
    -------------------------------------------------------------------------- */
 .services-highlight-section {
-  padding: 120px 0 100px;
+  padding: 100px 0 70px;
   position: relative;
 }
 
@@ -1048,8 +1048,8 @@ h1 em, h2 em, h3 em, h4 em,
 }
 
 .services-footer-strip {
-  margin-top: 64px;
-  padding-top: 48px;
+  margin-top: 48px;
+  padding-top: 36px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
@@ -1076,8 +1076,8 @@ h1 em, h2 em, h3 em, h4 em,
 .stats-counter-bar {
   background-color: var(--bg-dark);
   color: #FFFFFF;
-  padding: 72px 0;
-  margin: 60px 0;
+  padding: 64px 0;
+  margin: 0;
   position: relative;
   overflow: hidden;
 }
@@ -1137,6 +1137,86 @@ h1 em, h2 em, h3 em, h4 em,
   font-size: 0.94rem;
   color: rgba(255, 255, 255, 0.72);
   letter-spacing: 0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   SANCTUARY COLLAGE GRID (A Holistic Philosophy)
+   -------------------------------------------------------------------------- */
+.sanctuary-collage-section {
+  padding: 70px 0;
+  background-color: var(--bg-primary);
+  position: relative;
+}
+
+.sanctuary-collage-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 52px;
+  align-items: center;
+}
+
+.collage-left-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.collage-top-desc {
+  font-size: 1.02rem;
+  color: var(--text-muted);
+  line-height: 1.72;
+}
+
+/* 5-Photo Luxury Masonry/Grid */
+.masonry-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 135px;
+  gap: 14px;
+}
+
+.masonry-img-item {
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-subtle);
+  border: 1px solid var(--border-subtle);
+}
+
+.masonry-img-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out-expo);
+}
+
+.masonry-img-item:hover img {
+  transform: scale(1.06);
+}
+
+.item-tall {
+  grid-row: span 2;
+}
+
+.item-wide {
+  grid-column: span 2;
+}
+
+.collage-right-wrap {
+  padding-left: 10px;
+}
+
+.collage-right-wrap h3 {
+  font-size: clamp(2rem, 3.4vw, 2.7rem);
+  line-height: 1.25;
+  margin-bottom: 20px;
+}
+
+.collage-right-wrap p {
+  font-size: 1.02rem;
+  color: var(--text-muted);
+  line-height: 1.72;
+  margin-bottom: 24px;
 }
 
 /* --------------------------------------------------------------------------
@@ -2524,6 +2604,13 @@ h1 em, h2 em, h3 em, h4 em,
   .about-intro-right {
     padding-left: 20px;
   }
+  .sanctuary-collage-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .collage-right-wrap {
+    padding-left: 0;
+  }
   .holistic-grid {
     grid-template-columns: 1fr;
     gap: 36px;
@@ -2639,6 +2726,14 @@ h1 em, h2 em, h3 em, h4 em,
   .services-footer-strip {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+  .sanctuary-collage-section {
+    padding: 48px 0;
+  }
+  .masonry-gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 120px;
+    gap: 12px;
   }
   .spec-strip {
     grid-template-columns: 1fr;
