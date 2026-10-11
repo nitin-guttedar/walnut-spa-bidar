@@ -1,9 +1,9 @@
 /**
  * WALNUT SPA & WELLNESS - NAUBAD, BIDAR
- * Core Interactive Architecture: Parallax, Sliders, Accordion, Filters, Booking Engine
+ * Premium Interactive Engine: Parallax Depth, Reveal on Scroll, 3D Tilt, Draggable Slider & Modals
  */
 
-// Global image load resilience - fallback to verified local spa suites if any image fails
+// Image Fallback Resilience
 window.addEventListener('error', (event) => {
   if (event.target && event.target.tagName === 'IMG') {
     const img = event.target;
@@ -16,6 +16,9 @@ window.addEventListener('error', (event) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   initStickyHeader();
+  initScrollReveal();
+  initParallaxEffects();
+  init3DTiltEngine();
   initServicesCarousel();
   initCatalogFilters();
   initAccordions();
@@ -24,28 +27,155 @@ document.addEventListener('DOMContentLoaded', () => {
   initGalleryLightbox();
   initBookingEngine();
   initMobileNav();
-  initParallaxEffects();
-  init3DTiltEngine();
+  initSmoothScrollLinks();
 });
 
 /* ==========================================================================
-   1. STICKY HEADER & SCROLL BEHAVIOR
+   1. STICKY HEADER & SCROLL SPY
    ========================================================================== */
 function initStickyHeader() {
   const header = document.querySelector('.header');
   if (!header) return;
 
-  window.addEventListener('scroll', () => {
+  const handleScroll = () => {
     if (window.scrollY > 40) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
     }
+  };
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
+}
+
+/* ==========================================================================
+   2. SCROLL REVEAL OBSERVER (INTERSECTION OBSERVER)
+   ========================================================================== */
+function initScrollReveal() {
+  const revealElements = document.querySelectorAll(
+    '.reveal, .reveal-fade, .reveal-left, .reveal-right, .reveal-scale'
+  );
+
+  if (!revealElements.length) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReduced) {
+    revealElements.forEach(el => el.classList.add('is-revealed'));
+    return;
+  }
+
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px 0px -40px 0px',
+    threshold: 0.12
+  };
+
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  revealElements.forEach(el => revealObserver.observe(el));
+}
+
+/* ==========================================================================
+   3. GPU-ACCELERATED PARALLAX ENGINE (DEGRADES ON MOBILE & REDUCED MOTION)
+   ========================================================================== */
+function initParallaxEffects() {
+  const isMobile = window.innerWidth <= 768;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (isMobile || prefersReduced) return;
+
+  const heroBanner = document.querySelector('.hero-banner');
+  const heroFloating = document.querySelector('.hero-floating-card');
+  const ambientOrbs = document.querySelectorAll('.glow-ambient-orb');
+  const parallaxNodes = document.querySelectorAll('[data-parallax-speed]');
+
+  let ticking = false;
+
+  const updateParallax = () => {
+    const scrollY = window.scrollY;
+
+    // Hero background slow translation
+    if (heroBanner && scrollY < window.innerHeight * 1.5) {
+      const bannerOffset = scrollY * 0.18;
+      heroBanner.style.backgroundPositionY = `calc(50% + ${bannerOffset}px)`;
+    }
+
+    // Hero floating badge counter-parallax
+    if (heroFloating && scrollY < window.innerHeight) {
+      const floatOffset = -(scrollY * 0.12);
+      heroFloating.style.transform = `translate3d(0, ${floatOffset}px, 0)`;
+    }
+
+    // Ambient orbs subtle drift
+    if (ambientOrbs.length && scrollY < window.innerHeight * 1.5) {
+      ambientOrbs.forEach((orb, idx) => {
+        const factor = (idx % 2 === 0 ? 0.08 : -0.06);
+        orb.style.transform = `translate3d(0, ${scrollY * factor}px, 0)`;
+      });
+    }
+
+    // Elements with custom speed
+    parallaxNodes.forEach(node => {
+      const speed = parseFloat(node.getAttribute('data-parallax-speed')) || 0.1;
+      const rect = node.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        const yOffset = (window.innerHeight - rect.top) * speed * 0.2;
+        node.style.transform = `translate3d(0, ${yOffset}px, 0)`;
+      }
+    });
+
+    ticking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(updateParallax);
+      ticking = true;
+    }
   }, { passive: true });
 }
 
 /* ==========================================================================
-   2. TOP SERVICES PILL CAROUSEL (DRAG & ARROW CONTROLS)
+   4. 3D CARD TILT MICRO-INTERACTION (DESKTOP ONLY)
+   ========================================================================== */
+function init3DTiltEngine() {
+  const hasHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (!hasHover) return;
+
+  const tiltCards = document.querySelectorAll('.tilt-3d');
+
+  tiltCards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = ((y - centerY) / centerY) * -5;
+      const rotateY = ((x - centerX) / centerX) * 5;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translate3d(0, -4px, 10px)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translate3d(0, 0, 0)';
+    });
+  });
+}
+
+/* ==========================================================================
+   5. TOP SERVICES PILL CAROUSEL (DRAGGABLE & TACTILE CONTROLS)
    ========================================================================== */
 function initServicesCarousel() {
   const container = document.getElementById('servicesTrackContainer');
@@ -54,7 +184,7 @@ function initServicesCarousel() {
 
   if (!container) return;
 
-  const scrollAmount = 300;
+  const scrollAmount = 320;
 
   if (prevBtn) {
     prevBtn.addEventListener('click', () => {
@@ -68,7 +198,7 @@ function initServicesCarousel() {
     });
   }
 
-  // Mouse Drag to Scroll
+  // Mouse Drag to Scroll with Velocity
   let isDown = false;
   let startX;
   let scrollLeft;
@@ -94,13 +224,13 @@ function initServicesCarousel() {
     if (!isDown) return;
     e.preventDefault();
     const x = e.pageX - container.offsetLeft;
-    const walk = (x - startX) * 1.5; // Drag sensitivity
+    const walk = (x - startX) * 1.5;
     container.scrollLeft = scrollLeft - walk;
   });
 }
 
 /* ==========================================================================
-   3. TREATMENT CATALOG TABS FILTER
+   6. TREATMENT CATALOG TABS FILTER
    ========================================================================== */
 function initCatalogFilters() {
   const tabBtns = document.querySelectorAll('.tab-btn');
@@ -119,7 +249,13 @@ function initCatalogFilters() {
         const category = card.getAttribute('data-category');
         if (filter === 'all' || category === filter) {
           card.style.display = 'flex';
-          card.style.animation = 'fadeIn 0.5s ease forwards';
+          card.style.opacity = '0';
+          card.style.transform = 'translate3d(0, 16px, 0)';
+          setTimeout(() => {
+            card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translate3d(0, 0, 0)';
+          }, 30);
         } else {
           card.style.display = 'none';
         }
@@ -129,7 +265,7 @@ function initCatalogFilters() {
 }
 
 /* ==========================================================================
-   4. THERAPEUTIC ACCORDION
+   7. THERAPEUTIC ACCORDION
    ========================================================================== */
 function initAccordions() {
   const headers = document.querySelectorAll('.accordion-header');
@@ -153,7 +289,7 @@ function initAccordions() {
 }
 
 /* ==========================================================================
-   5. STATS ANIMATED COUNTER
+   8. STATS ANIMATED COUNTER
    ========================================================================== */
 function initStatsCounter() {
   const statNumbers = document.querySelectorAll('.stat-number');
@@ -166,32 +302,48 @@ function initStatsCounter() {
       if (entry.isIntersecting && !counted) {
         counted = true;
         statNumbers.forEach(item => {
-          const target = item.getAttribute('data-target');
+          const target = item.getAttribute('data-target') || item.textContent;
           const isPercent = target.includes('%');
           const isPlus = target.includes('+');
-          const numValue = parseInt(target.replace(/[^0-9]/g, ''));
-          let current = 0;
-          const step = Math.max(1, Math.floor(numValue / 40));
-          const interval = setInterval(() => {
-            current += step;
-            if (current >= numValue) {
-              current = numValue;
-              clearInterval(interval);
-            }
-            item.textContent = current + (isPercent ? '%' : (isPlus ? '+' : ''));
-          }, 35);
+          const isRating = target.includes('.');
+          
+          if (isRating) {
+            const finalVal = parseFloat(target);
+            let cur = 0;
+            const timer = setInterval(() => {
+              cur += 0.1;
+              if (cur >= finalVal) {
+                cur = finalVal;
+                clearInterval(timer);
+              }
+              item.textContent = cur.toFixed(1);
+            }, 30);
+          } else {
+            const numValue = parseInt(target.replace(/[^0-9]/g, ''));
+            let current = 0;
+            const step = Math.max(1, Math.floor(numValue / 35));
+            const timer = setInterval(() => {
+              current += step;
+              if (current >= numValue) {
+                current = numValue;
+                clearInterval(timer);
+              }
+              item.textContent = current + (isPercent ? '%' : (isPlus ? '+' : ''));
+            }, 30);
+          }
         });
       }
     });
-  }, { threshold: 0.4 });
+  }, { threshold: 0.35 });
 
   const counterBar = document.querySelector('.stats-counter-bar');
   if (counterBar) observer.observe(counterBar);
 }
 
 /* ==========================================================================
-   6. TREATMENT DETAILS MODAL DATA & CONTROLLER
+   9. COMPLETE TREATMENT DETAILS MODAL DATA & CONTROLLER
    ========================================================================== */
+const treatmentsData = {
   aroma: {
     title: "Aroma Therapy Massage",
     tagline: "Emotional serenity & botanical essential healing",
@@ -255,7 +407,7 @@ function initStatsCounter() {
   swedish: {
     title: "Swedish Classical Massage",
     tagline: "The gold standard of gentle European relaxation",
-    image: "assets/spa-swedish.jpg",
+    image: "assets/spa-female-massage.jpg",
     pageUrl: "swedish-massage.html",
     duration: "60 / 90 Minutes",
     focus: "Circulation Enhancement & Total Relaxation",
@@ -315,7 +467,7 @@ function initStatsCounter() {
   signature: {
     title: "Walnut Signature Wellness Massage",
     tagline: "Our master therapist's bespoke fusion ritual",
-    image: "assets/spa-herbal.jpg",
+    image: "assets/spa-amenities.jpg",
     pageUrl: "signature-massage.html",
     duration: "90 / 120 Minutes",
     focus: "The Ultimate Walnut Spa Luxury Experience",
@@ -379,7 +531,6 @@ function initServiceModal() {
 
   if (!modalOverlay || !modalBody) return;
 
-  // Open modal on click
   document.querySelectorAll('[data-service-key]').forEach(trigger => {
     trigger.addEventListener('click', (e) => {
       e.preventDefault();
@@ -387,14 +538,13 @@ function initServiceModal() {
       const data = treatmentsData[key];
 
       if (data) {
-        renderModalContent(data, key);
+        renderModalContent(data);
         modalOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
       }
     });
   });
 
-  // Close handlers
   const closeModal = () => {
     modalOverlay.classList.remove('active');
     document.body.style.overflow = '';
@@ -411,12 +561,12 @@ function initServiceModal() {
     }
   });
 
-  function renderModalContent(data, key) {
+  function renderModalContent(data) {
     modalBody.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
         <div style="height: 280px; border-radius: 20px; overflow: hidden; position: relative;">
           <img src="${data.image}" alt="${data.title}" style="width: 100%; height: 100%; object-fit: cover;">
-          <div style="position: absolute; bottom: 16px; left: 16px; background: rgba(30, 37, 30, 0.85); backdrop-filter: blur(8px); padding: 6px 16px; border-radius: 999px; color: #FFF; font-size: 0.85rem; font-weight: 600;">
+          <div style="position: absolute; bottom: 16px; left: 16px; background: rgba(20, 28, 22, 0.88); backdrop-filter: blur(8px); padding: 6px 16px; border-radius: 999px; color: #FFF; font-size: 0.85rem; font-weight: 600;">
             ${data.duration}
           </div>
         </div>
@@ -455,37 +605,7 @@ function initServiceModal() {
 }
 
 /* ==========================================================================
-   3D TILT ENGINE & PARALLAX SENSITIVITY
-   ========================================================================== */
-function init3DTiltEngine() {
-  const tiltElements = document.querySelectorAll('.tilt-3d, .service-pill-card, .catalog-card, .area-blog-card, .benefit-feature-card, .testimonial-card, .spec-box');
-  
-  tiltElements.forEach(el => {
-    el.style.transition = 'transform 0.2s cubic-bezier(0.2, 0.8, 0.4, 1)';
-    el.style.transformStyle = 'preserve-3d';
-
-    el.addEventListener('mousemove', (e) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      
-      const rotateX = ((y - centerY) / centerY) * -6;
-      const rotateY = ((x - centerX) / centerX) * 6;
-      
-      el.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(8px)`;
-    });
-    
-    el.addEventListener('mouseleave', () => {
-      el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
-    });
-  });
-}
-
-/* ==========================================================================
-   7. GALLERY LIGHTBOX
+   10. GALLERY LIGHTBOX
    ========================================================================== */
 function initGalleryLightbox() {
   const lightbox = document.getElementById('galleryLightbox');
@@ -511,10 +631,16 @@ function initGalleryLightbox() {
   lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) closeLb();
   });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+      closeLb();
+    }
+  });
 }
 
 /* ==========================================================================
-   8. SMART BOOKING ENGINE -> WHATSAPP LINK GENERATOR
+   11. SMART BOOKING ENGINE -> WHATSAPP LINK GENERATOR
    ========================================================================== */
 function initBookingEngine() {
   const form = document.getElementById('spaBookingForm');
@@ -534,17 +660,12 @@ function initBookingEngine() {
     const message = `Hello Walnut Spa Naubad, Bidar! 🌿%0A%0AI would like to book a therapy session with you:%0A%0A• *Client Name:* ${encodeURIComponent(name)}%0A• *Contact Phone:* ${encodeURIComponent(phone)}%0A• *Service Selected:* ${encodeURIComponent(service)}%0A• *Preferred Date:* ${encodeURIComponent(date)}%0A• *Preferred Time:* ${encodeURIComponent(time)}%0A• *Therapist Preference:* ${encodeURIComponent(therapist)}%0A• *Notes/Requests:* ${encodeURIComponent(notes)}%0A%0APlease confirm availability for me. Thank you!`;
 
     const whatsappUrl = `https://wa.me/919972053939?text=${message}`;
-
-    // Open WhatsApp in new tab
     window.open(whatsappUrl, '_blank');
-
-    // Friendly on-screen feedback
-    alert(`Thank you, ${name}! Your booking request is ready. Opening WhatsApp to connect directly with Walnut Spa at +91 9972053939 for instant confirmation.`);
   });
 }
 
 /* ==========================================================================
-   9. MOBILE NAVIGATION DRAWER
+   12. MOBILE NAVIGATION DRAWER
    ========================================================================== */
 function initMobileNav() {
   const toggleBtn = document.getElementById('mobileNavToggle');
@@ -571,19 +692,26 @@ function initMobileNav() {
 }
 
 /* ==========================================================================
-   10. SCROLL PARALLAX & REVEAL ANIMATIONS
+   13. SMOOTH SCROLL ANCHOR LINKS
    ========================================================================== */
-function initParallaxEffects() {
-  // Parallax subtle shifts on scroll
-  const parallaxNodes = document.querySelectorAll('[data-parallax-speed]');
+function initSmoothScrollLinks() {
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const targetId = this.getAttribute('href');
+      if (targetId === '#' || targetId === '') return;
 
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
+      const targetEl = document.querySelector(targetId);
+      if (targetEl) {
+        e.preventDefault();
+        const headerOffset = 90;
+        const elementPosition = targetEl.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-    parallaxNodes.forEach(node => {
-      const speed = parseFloat(node.getAttribute('data-parallax-speed')) || 0.1;
-      const yOffset = -(scrollY * speed);
-      node.style.transform = `translateY(${yOffset}px)`;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
     });
-  }, { passive: true });
+  });
 }
