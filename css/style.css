@@ -2101,6 +2101,7 @@ h1 em, h2 em, h3 em, h4 em,
   height: 54px;
   width: auto;
   margin-bottom: 20px;
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.45)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
 }
 
 .footer-about p {
@@ -2678,6 +2679,135 @@ h1 em, h2 em, h3 em, h4 em,
 }
 
 @media (max-width: 768px) {
+  /* Green Topbar Mobile Responsiveness */
+  .topbar {
+    padding: 8px 0;
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+  .topbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  /* Hide lengthy hours and full address on mobile so words never stack vertically */
+  .topbar-left .topbar-item:nth-child(2) {
+    display: none !important;
+  }
+  .topbar-left .topbar-item:first-child span {
+    display: inline-block;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+  .topbar-item {
+    white-space: nowrap;
+    font-size: 0.78rem;
+    flex-shrink: 0;
+  }
+  .topbar-item a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+  }
+
+  /* Header mobile adjustment */
+  .nav-container {
+    height: 68px;
+    padding: 0 18px;
+  }
+  .logo-img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+  }
+  .mobile-toggle {
+    font-size: 1.35rem;
+    padding: 8px;
+  }
+}
+
+/* Smartphone Breakpoint: Center Call & WhatsApp, Hide lengthy address */
+@media (max-width: 520px) {
+  .topbar {
+    padding: 8px 0;
+  }
+  .topbar-content {
+    justify-content: center;
+    padding: 0 12px;
+  }
+  .topbar-left {
+    display: none !important;
+  }
+  .topbar-right {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+    gap: 20px;
+  }
+  .topbar-item {
+    font-size: 0.78rem;
+  }
+  .topbar-item a {
+    gap: 6px;
+  }
+  .nav-container {
+    height: 64px;
+    padding: 0 16px;
+  }
+  .logo-img {
+    height: 44px;
+  }
+}
+
+/* Narrow smartphone screens (iPhone SE, Galaxy Fold cover, etc.) */
+@media (max-width: 380px) {
+  .topbar {
+    padding: 6px 0;
+  }
+  .topbar-right {
+    gap: 14px;
+  }
+  .topbar-item {
+    font-size: 0.73rem;
+  }
+  .topbar-item i {
+    font-size: 0.78rem;
+  }
+  .nav-container {
+    height: 60px;
+    padding: 0 12px;
+  }
+  .logo-img {
+    height: 38px;
+  }
+  .mobile-toggle {
+    font-size: 1.25rem;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 768px) {
+
   /* On mobile: Disable expensive scroll transforms for silky 60fps performance */
   .reveal-left, .reveal-right {
     transform: translate3d(0, 24px, 0);
