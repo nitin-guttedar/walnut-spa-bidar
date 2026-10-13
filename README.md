@@ -21,7 +21,7 @@ A warm-themed luxury spa web experience crafted for **Walnut Spa**, the premier 
 - **Address**: 1st Floor, Above HP Gas Agency, Beside Gurudwara Arch, Naubad, Bidar, Karnataka 585402
 - **Direct Phone**: [+91 9972053939](tel:+919972053939)
 - **WhatsApp**: [+91 9972053939](https://wa.me/919972053939)
-- **Hours**: Monday – Sunday, 10:00 AM – 9:00 PM
+- **Hours**: Monday – Sunday, 11:00 AM – 10:00 PM
 
 ---
 
