@@ -2170,6 +2170,18 @@ h1 em, h2 em, h3 em, h4 em,
   color: rgba(255, 255, 255, 0.55);
 }
 
+.footer-bottom-bar a {
+  color: #EBD6BC;
+  font-weight: 500;
+  text-decoration: none;
+  transition: var(--transition-smooth, all 0.3s ease);
+}
+
+.footer-bottom-bar a:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
 /* --------------------------------------------------------------------------
    FLOATING ACTION BUTTONS (WHATSAPP & CALL)
    -------------------------------------------------------------------------- */
